@@ -1,0 +1,10 @@
+# Processor Requirements
+# NLP and ML processing
+
+psycopg2-binary==2.9.9
+sqlalchemy==2.0.23
+nltk==3.8.1
+scikit-learn==1.3.2
+numpy==1.24.3
+pandas==2.1.1
+spacy==3.7.2

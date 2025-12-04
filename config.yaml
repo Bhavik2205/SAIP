@@ -1,0 +1,25 @@
+# Smart Intel Platform Configuration
+# External config file for sector-agnostic crawling
+
+sectors:
+  - name: "Energy_Venezuela"
+    seeds:
+      - "https://ofac.treasury.gov/sanctions-programs-and-country-information/venezuela-related-sanctions"
+      - "https://www.sec.gov/edgar/search-filings"
+    keywords: ["sanctions", "license", "Exxon", "PdVSA", "arbitration", "shipping"]
+    allowed_domains: ["treasury.gov", "sec.gov"]
+
+# Add more sectors as needed:
+# - name: "Finance_APAC"
+#   seeds:
+#     - "https://example.com/finance"
+#   keywords: ["interest", "rate", "bonds"]
+#   allowed_domains: ["example.com"]
+
+crawler_settings:
+  download_delay: 5  # Base delay between requests (seconds)
+  random_delay: 5    # Random jitter (0-5 seconds)
+  concurrent_requests: 4
+  timeout: 30  # Request timeout (seconds)
+  retry_times: 3
+  redirect_max: 3
