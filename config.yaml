@@ -1,25 +1,74 @@
-  # Smart Intel Platform Configuration
-  # External config file for sector-agnostic crawling
+  - name: "SEC_Filings"
+    seeds:
+      # Apple Inc. filings example (you can swap CIK dynamically later)
+      - "https://www.sec.gov/edgar/browse/?CIK=0000320193&owner=exclude"
+      - "https://www.sec.gov/cgi-bin/browse-edgar?action=getcurrent"
+      - "https://www.sec.gov/edgar/search/"
+      # RSS feed for real-time filings
+      - "https://www.sec.gov/cgi-bin/browse-edgar?action=getcurrent&type=&dateb=&owner=exclude&start=0&count=100&output=atom"
+    keywords:
+      - "10-K"
+      - "10-Q"
+      - "8-K"
+      - "form"
+      - "filing"
+      - "annual report"
+      - "quarterly"
+      - "edgar"
+      - "sec"
+    allowed_domains:
+      - "sec.gov"
+    extra:
+      parse_pdfs: true
+      parse_xml: true
+      respect_robots: true
+      max_depth: 3
+      extract_filing_type: true
 
-  sectors:
-    - name: "Energy_Venezuela"
-      seeds:
-        - "https://ofac.treasury.gov/sanctions-programs-and-country-information/venezuela-related-sanctions"
-        - "https://www.sec.gov/edgar/search-filings"
-      keywords: ["sanctions", "license", "Exxon", "PdVSA", "arbitration", "shipping"]
-      allowed_domains: ["treasury.gov", "sec.gov"]
 
-  # Add more sectors as needed:
-  # - name: "Finance_APAC"
-  #   seeds:
-  #     - "https://example.com/finance"
-  #   keywords: ["interest", "rate", "bonds"]
-  #   allowed_domains: ["example.com"]
+  - name: "SEC_Press_Releases"
+    seeds:
+      - "https://www.sec.gov/news/pressreleases"
+      - "https://www.sec.gov/news/speeches"
+      - "https://www.sec.gov/news/statements"
+      - "https://www.sec.gov/news/spotlight"
+    keywords:
+      - "release"
+      - "announcement"
+      - "statement"
+      - "rulemaking"
+      - "commission"
+      - "policy"
+    allowed_domains:
+      - "sec.gov"
+    extra:
+      page_type: "news"
+      extract_date: true
+      extract_author: true
+      max_depth: 2
 
-  crawler_settings:
-    download_delay: 5  # Base delay between requests (seconds)
-    random_delay: 5    # Random jitter (0-5 seconds)
-    concurrent_requests: 4
-    timeout: 30  # Request timeout (seconds)
-    retry_times: 3
-    redirect_max: 3
+
+  - name: "SEC_Enforcement"
+    seeds:
+      - "https://www.sec.gov/enforcement"
+      - "https://www.sec.gov/litigation/litreleases"
+      - "https://www.sec.gov/litigation/admin"
+      - "https://www.sec.gov/litigation/opinions"
+    keywords:
+      - "charged"
+      - "fraud"
+      - "violations"
+      - "enforcement"
+      - "penalty"
+      - "settlement"
+      - "litigation"
+      - "complaint"
+      - "indicted"
+    allowed_domains:
+      - "sec.gov"
+    extra:
+      extract_case_number: true
+      extract_pdf_links: true
+      extract_defendants: true
+      extract_penalties: true
+      max_depth: 3
