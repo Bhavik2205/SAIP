@@ -46,6 +46,6 @@ tomli==2.3.0
 Twisted==22.10.0
 twisted-iocpsupport==1.0.4
 typing_extensions==4.15.0
-urllib3==2.5.0
+urllib3==2.6.0
 w3lib==2.3.1
 zope.interface==8.1.1
