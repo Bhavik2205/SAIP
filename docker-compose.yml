@@ -1,0 +1,80 @@
+services:
+  # PostgreSQL Database
+  db:
+    image: postgres:16-alpine
+    container_name: saip-db
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-intel_user}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-secure_password}
+      POSTGRES_DB: ${POSTGRES_DB:-intel_db}
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./data/db:/var/lib/postgresql/data
+      - ./crawler/init_db.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - intel-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-intel_user}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Scrapy Crawler Service
+  crawler:
+    build:
+      context: ./crawler
+      dockerfile: Dockerfile
+    container_name: saip-crawler
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: postgresql://${POSTGRES_USER:-intel_user}:${POSTGRES_PASSWORD:-secure_password}@db:5432/${POSTGRES_DB:-intel_db}
+      PYTHONUNBUFFERED: 1
+    volumes:
+      - ./config.yaml:/app/config.yaml:ro
+      - ./crawler/logs:/app/logs
+    networks:
+      - intel-network
+    restart: unless-stopped
+
+  # NLP Processor Service
+  processor:
+    build:
+      context: ./processor
+      dockerfile: Dockerfile
+    container_name: saip-processor
+    depends_on:
+      - db
+    environment:
+      DATABASE_URL: postgresql://${POSTGRES_USER:-intel_user}:${POSTGRES_PASSWORD:-secure_password}@db:5432/${POSTGRES_DB:-intel_db}
+      PYTHONUNBUFFERED: 1
+    networks:
+      - intel-network
+    restart: unless-stopped
+
+  # Streamlit UI Service
+  ui:
+    build:
+      context: ./ui
+      dockerfile: Dockerfile
+    container_name: saip-ui
+    depends_on:
+      - db
+      - processor
+    environment:
+      DATABASE_URL: postgresql://${POSTGRES_USER:-intel_user}:${POSTGRES_PASSWORD:-secure_password}@db:5432/${POSTGRES_DB:-intel_db}
+      PYTHONUNBUFFERED: 1
+    ports:
+      - "8501:8501"
+    networks:
+      - intel-network
+    restart: unless-stopped
+
+networks:
+  intel-network:
+    driver: bridge
+
+volumes:
+  postgres_data:
