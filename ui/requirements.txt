@@ -1,7 +1,7 @@
 # UI Requirements
 # Streamlit dashboard
 
-streamlit==1.29.0
+streamlit==1.37.0
 psycopg2-binary==2.9.9
 sqlalchemy==2.0.23
 pandas==2.1.1
